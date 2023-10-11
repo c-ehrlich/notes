@@ -1,0 +1,72 @@
+# Shell
+- lecture notes https://missing.csail.mit.edu/2020/course-shell/
+
+## Lecture
+- basic examples
+  - `date`
+  - `echo hello` - argument
+  - `echo hello world` - 2 arguments
+  - `echo "hello world"` - 1 argument
+  - `echo hello\ world` - 1 argument
+- how does the shell know what these programs are?
+  - shell searches for programs through environment variable
+  - shell is a programming language (loops, conditionals, functions, etc)
+  - $PATH variable `echo $PATH`
+    - a list of directories to search for a program. it uses the first one it finds
+    - `which echo` => where is this echo?
+- paths
+  - relative paths are relative to the current working directory
+  - `ls ..`
+  - `~` is home => `cd ~/Documents/dev`
+  - `cd -` goes to previous directory
+  - `ls -a` stuff
+    - `(d|l|-)rw-r--r--(@?)`
+      - d means directory, (l means link??)
+      - first group of 3: permissions for file owner
+      - second group of 3: permissions for group owners
+      - third group of 3: permissions for everyone else
+      - rwx ... read write executre
+        - execute is "search" ... are you allowed to enter this directory?
+        - to cd into a directory you need x on it and all parent dirs
+      - if you have write permissions on a file but not its directory, you can't delete it
+- flags and options
+  - `ls --help` on bash or `man ls` on zsh
+  - flag: doesn't take a value
+  - option: takes a value
+- other common navigation stuff
+  - `mv`: move/rename
+  - `cp`: copy
+  - `rm`: remove (not recursive by default)
+  - `rmdir`: remove empty directory
+  - `mkdir`: make a directory
+- combining programs
+  - streams: input and output
+    - default input stream: keyboard / terminal
+    - but you can also give a different input ... for example the output of another terminal
+    - `< file` ... rewire input of this program to be contents of this file
+    - `> file` ... rewire output of this program to be contents of this file
+    - `echo hello > hello.txt`
+    - `cat` prints from a file
+    - `cat < hello.txt`
+    - `>>` is append instead of write
+  - pipe (`|`)
+    - take the output of the program of the left and make it the input of the program on the right
+    - `ls -l / | tail -n1`
+    - ls and tail don't know about each other
+    - `ls -l / | tail -n1 | > foo.txt`
+    - this allows some crazy data wrangling!
+    - `curl --head --silent google.com | grep -i content-length | cut --delimiter=' ' -f2`
+  - pipes are not just for textual data! can for example also chain image manipulation this way
+- root / super user (linux and mac) - uid 0 - can do anything it wants on the system, read protected files, etc
+  - you don't want to operate your computer like this
+  - `sudo`, `su`, `su username`
+- `#` means "run this as root"
+- `$` means not as root
+- `echo 1 | sudo tee brightness` - `tee` prints to file and stdout
+- `open` (mac) / `xdg-open` (linux)
+
+## Exercises
+- double quotes execute, single quotes don't
+- `#!/bin/sh` tells it to execute with `sh`, see https://en.wikipedia.org/wiki/Shebang_(Unix)
+- `ls -l | grep "semester"`
+- `ls -l | grep "semester" | cut -d' ' -f9-10` -> `Jun 11`
